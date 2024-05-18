@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        body {
+            padding: 20px;
+        }
+        .task-card {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-4 mb-3">WebSocket Test</h1>
+    <div id="tasks"></div>
+</div>
+
+<!-- Bootstrap JavaScript -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- WebSocket script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+    const socket = io('wss://robert-hello-niyo-production.up.railway.app');
+
+    socket.on('connect', () => {
+        console.log('Connected to WebSocket server');
+    });
+
+    socket.addEventListener('message', function (event) {
+        console.log('Message from server:', event.data);
+    });
+
+    socket.on('taskCreated', (task) => {
+        const tasksDiv = document.getElementById('tasks');
+        const taskCard = document.createElement('div');
+        taskCard.classList.add('card', 'task-card');
+        taskCard.innerHTML = `
+            <div class="card-body">
+                <h5 class="card-title">${task.title}</h5>
+                <p class="card-text">${task.description}</p>
+                <p class="card-text"><small class="text-muted">ID: ${task.id}</small> - Created at ${task.createdAt}</p>
+            </div>`;
+        tasksDiv.appendChild(taskCard);
+    });
+</script>
+</body>
+</html>
